@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
@@ -992,24 +992,7 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
 .login-overlay .login-card { width: 100%; max-width: 380px; }
 
 
-/* ============ 设计师：隐藏一切价格 ============ */
-body.is-designer .cb-f-price,
-body.is-designer .cb-amt,
-body.is-designer .cb-addons,
-body.is-designer #sumLines,
-body.is-designer #sumTotals,
-body.is-designer #sumPay,
-body.is-designer #payModeHint,
-body.is-designer .summary-card .field-grid,
-body.is-designer .summary-card .sum-divider,
-body.is-designer .cb-f .cell-tag,
-body.is-designer .addon-btn,
-body.is-designer .summary-actions [data-act="preview"] { display: none !important; }
-body.is-designer .workspace { padding-right: 0; }
-body.is-designer .summary-card {
-  position: static; width: auto; box-shadow: none; margin-top: 12px;
-}
-body.is-designer .summary-card h2 .badge { display: inline; }
+/* ============ 设计师：能看到价格（预设单要拿给客户看），只隐藏商品库设置 ============ */
 
 /* ============ 总账号门店控制台 ============ */
 .tc-wrap { max-width: 1000px; margin: 24px auto; padding: 0 16px; }
@@ -1027,9 +1010,8 @@ body.is-super-root .tabs { display: none; }
 body.is-super-root .topbar-right .who { color: #fff; }
 
 /* 设计师：隐藏 统一设置里的单价、报价记录金额列、商品库设置 */
-body.is-designer .cab-global .g-item:has([data-gcf="priceInput"]) { display: none !important; }
-body.is-designer .data thead th:nth-child(6),
-body.is-designer .data tbody td:nth-child(6) { display: none !important; }
+
+
 body.is-designer [data-tab="settings"] { display: none !important; }
 body.is-designer .summary-card h2 { font-size: 13px; }
 
@@ -1095,6 +1077,17 @@ body.is-designer .summary-card h2 { font-size: 13px; }
 .chk-tip { font-size: 12px; color: #64748b; margin: 0 0 10px; }
 .chk-list { margin: 0; padding-left: 20px; font-size: 12.5px; line-height: 1.9; color: #334155; }
 .chk-acts { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+/* ============ 指派设计师 ============ */
+.asg-overlay { position: fixed; inset: 0; z-index: 310; background: rgba(12,26,42,.5); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.asg-card { background: #fff; border-radius: 12px; width: 100%; max-width: 480px; padding: 20px 22px; box-shadow: 0 24px 60px rgba(6,24,44,.4); }
+.asg-card h3 { margin: 0 0 6px; font-size: 15px; }
+.asg-tip { font-size: 12px; color: #64748b; line-height: 1.7; margin: 0 0 12px; }
+.asg-list { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow: auto; }
+.asg-item { text-align: left; border: 1px solid #e3eaf2; background: #fbfdff; border-radius: 8px; padding: 10px 14px; font-size: 13px; cursor: pointer; }
+.asg-item:hover { border-color: #1f4e79; background: #eef4fa; }
+.asg-item small { color: #94a3b8; margin-left: 8px; font-size: 11px; }
+.asg-acts { display: flex; justify-content: flex-end; margin-top: 14px; }
 </style>
 </head>
 <body>
@@ -2242,7 +2235,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
       const margin = c.finalTotal > 0 ? round2(ct.profit / c.finalTotal * 100) : 0;
       const cls = ct.profit >= 0 ? (margin >= 25 ? 'ok' : 'warn') : 'bad';
       const st = q.status || 'quoted';
-      const stTxt = { draft: '草稿', filled: '待报价', quoted: '已报价', deal: '已成交', void: '已作废' }[st] || st;
+      const stTxt = { draft: '草稿', preset: '待填写', filled: '待报价', quoted: '已报价', deal: '已成交', void: '已作废' }[st] || st;
       return '<tr>' +
         '<td>' + esc(q.quotationNo || '（草稿）') + '</td>' +
         '<td>' + esc((q.customer && q.customer.name) || '—') + '</td>' +
@@ -2450,6 +2443,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
           '<button type="button" class="btn primary" data-act="save">保存报价</button>' +
           '<button type="button" class="btn" data-act="preview">预览报价单</button>' +
         '</div>' +
+        (window.__CTX && window.__CTX.canPrice ? '<div class="summary-actions"><button type="button" class="btn" data-act="assign">指派给设计师</button></div>' : '') +
         '<div class="summary-actions">' +
           '<button type="button" class="btn ghost" data-act="reset">新建 / 清空</button>' +
         '</div>' +
@@ -2852,7 +2846,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
     return list.map(item => {
       const c = calc(item);
       const st = item.status || 'quoted';
-      const stTxt = { draft: '草稿', filled: '待报价', quoted: '已报价', deal: '已成交', void: '已作废' }[st] || st;
+      const stTxt = { draft: '草稿', preset: '待填写', filled: '待报价', quoted: '已报价', deal: '已成交', void: '已作废' }[st] || st;
       const isDraft = (item.status === 'draft');
       const noTxt = item.quotationNo || (isDraft ? '（未编号·草稿）' : '—');
       return '<tr>' +
@@ -3697,7 +3691,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
     }
     const c = calc(draft);
     const noPrice = !!(window.__CTX && window.__CTX.canPrice === false);
-    if (c.subtotal <= 0 && !noPrice) { toast('报价金额为 0，请检查尺寸与单价', true); return; }
+    if (c.subtotal <= 0 && !noPrice && !draft.preset) { toast('报价金额为 0，请检查尺寸与单价', true); return; }
 
     const now = new Date().toISOString();
     /* 归属：新建时记当前账号；管理员打开别人的单保存时不改归属 */
@@ -3707,7 +3701,8 @@ body.is-designer .summary-card h2 { font-size: 13px; }
     if (!draft.createdAt) draft.createdAt = now;
     draft.updatedAt = now;
     if (draft.status === 'draft' || draft.status === 'filled') {
-      draft.status = (window.__CTX && window.__CTX.canPrice === false) ? 'filled' : 'quoted';
+      const isDesigner = !!(window.__CTX && window.__CTX.canPrice === false);
+      draft.status = isDesigner ? (draft.preset ? 'quoted' : 'filled') : 'quoted';
     }
 
     const idx = DB.quotations.findIndex(x => x.id === draft.id);
@@ -4510,6 +4505,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
         break;
       }
       case 'compare': openCompare(id); break;
+      case 'assign': openAssign(); break;
       case 'logout': doLogout(); break;
       case 'changePw': {
         const o = ($('#pwOld') || {}).value || '';
@@ -4904,6 +4900,46 @@ body.is-designer .summary-card h2 { font-size: 13px; }
     '</section>';
   }
 
+
+
+  /* ================= 按单预设价：把这张单指派给设计师填尺寸 ================= */
+  function openAssign() {
+    const old = document.querySelector('.asg-overlay');
+    if (old) old.remove();
+    const box = document.createElement('div');
+    box.className = 'asg-overlay';
+    box.innerHTML = '<div class="asg-card"><h3>指派给设计师填写尺寸</h3>' +
+      '<p class="asg-tip">设计师登录后只会看到这张单，看不到价格表。他填完尺寸保存，系统按你预设的单价自动算好，状态变「已报价」，可以直接给客户看。</p>' +
+      '<div class="asg-list" id="asgList">加载中…</div>' +
+      '<div class="asg-acts"><button type="button" class="btn" data-asg-close="1">取消</button></div></div>';
+    document.body.appendChild(box);
+
+    fetch('/api/users', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(j => {
+        const list = (j.users || []).filter(u => u.role === 'designer' && !u.disabled);
+        const el = box.querySelector('#asgList');
+        el.innerHTML = list.length
+          ? list.map(u => '<button type="button" class="asg-item" data-asg="' + esc(u.username) + '">' +
+              esc(u.username) + '<small>' + esc(u.tenantName || '') + '</small></button>').join('')
+          : '<div class="empty">这个门店还没有设计师账号，先去「商品库设置 → 账号安全」加一个</div>';
+      })
+      .catch(() => { box.querySelector('#asgList').innerHTML = '<div class="empty">读取账号失败</div>'; });
+
+    box.addEventListener('click', e => {
+      if (e.target === box || e.target.closest('[data-asg-close]')) { box.remove(); return; }
+      const item = e.target.closest('[data-asg]');
+      if (!item) return;
+      const who = item.dataset.asg;
+      draft.preset = true;
+      draft.assignedTo = who;
+      draft.status = 'preset';
+      box.remove();
+      doSaveQuotation(true);
+      toast('已指派给「' + who + '」，他登录后就能填写尺寸');
+      setTimeout(() => { if (tab === 'booking') render(); }, 600);
+    });
+  }
 
   /* ================= 比价：同一个柜体，不同品牌/材质的报价 ================= */
   function openCompare(cabId) {
