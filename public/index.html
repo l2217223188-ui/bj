@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
@@ -4152,30 +4152,18 @@ body.is-designer .summary-card h2 { font-size: 13px; }
     if (el.dataset.db) {
       const v = el.type === 'checkbox' ? el.checked : (el.type === 'number' ? (el.value === '' ? '' : Number(el.value)) : el.value);
       const path = el.dataset.db;
-      /* 选项改名时，把旧名字在价格表 / 当前单 / 历史单里一起替换，避免价格匹配失效 */
-      let renamed = 0;
-      const mMat = path.match(/^config\.(cabinetMaterials|doorMaterials)\.(\d+)$/);
-      if (mMat) {
-        const field = mMat[1] === 'cabinetMaterials' ? 'cabinetMaterial' : 'doorMaterial';
-        const oldName = (DB.config[mMat[1]] || [])[Number(mMat[2])];
-        renamed = propagateValue(field, oldName, v);
+      /* 材质改名：在第一次输入前记住原值（因为每敲一个字就已经写进 DB 了） */
+      if (/^config\.(cabinetMaterials|doorMaterials)\.\d+$/.test(path) && el.dataset.orig === undefined) {
+        const seg = path.split('.');
+        el.dataset.orig = String(((DB.config[seg[1]] || [])[Number(seg[2])]) == null ? '' : (DB.config[seg[1]] || [])[Number(seg[2])]);
       }
       setPath(DB, path, v);
       if (path === 'config.storeName') $('#storeName').textContent = v;
       queueDbSave();
-      /* 柜体类型的启用/关闭：立刻刷新这一栏的样式与文字 */
+      /* 柜体类型的启用/关闭：勾选框，重建不影响输入 */
       if (/^config\.cabinetTypes\.\d+\.enabled$/.test(path)) {
         $('#view').innerHTML = renderSettings();
         toast(v ? '已启用该类型' : '已关闭该类型（开单时不再出现，已开的单不受影响）');
-        return;
-      }
-      if (mMat) {
-        if (renamed > 0) {
-          toast('已同步更新 ' + renamed + ' 处引用');
-          render();
-        } else {
-          $('#view').innerHTML = renderSettings();
-        }
       }
       return;
     }
@@ -4272,8 +4260,19 @@ body.is-designer .summary-card h2 { font-size: 13px; }
       return;
     }
     if (el.dataset.bind || el.dataset.db || el.dataset.terms !== undefined) {
+      /* 材料改名：先记住旧名字，写入新值后再把价格表/单据里的旧名一起换掉。
+         注意只在这里（change / 失焦）做，不能在 input 里做，否则每打一个字就重建输入框导致打不了字 */
+      const dbPath = el.dataset.db || '';
+      const mm = dbPath.match(/^config\.(cabinetMaterials|doorMaterials)\.(\d+)$/);
+      const oldName = el.dataset.orig !== undefined ? el.dataset.orig : null;
       onViewInput(e);
       normalizeNumField(el);
+      if (mm && oldName && oldName !== el.value) {
+        const field = mm[1] === 'cabinetMaterials' ? 'cabinetMaterial' : 'doorMaterial';
+        const n = propagateValue(field, oldName, el.value);
+        if (n > 0) toast('已同步更新 ' + n + ' 处引用');
+        if (tab === 'settings') $('#view').innerHTML = renderSettings();
+      }
       if (el.dataset.bind && el.dataset.bind.indexOf('payment.') === 0) clampPayment();
       return;
     }
