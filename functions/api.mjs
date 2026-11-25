@@ -785,25 +785,24 @@ function designerAuto(db, user) {
 function seeAll(ctx) { return ctx.role !== 'designer'; }
 
 /* 设计师看不到任何价格 */
+/* 设计师隐藏「板材价格表」，但保留增项/五金/规则价格（预设单要能算出金额） */
 function stripPrices(d) {
-  (d.priceRules || []).forEach(r => { r.priceSqm = null; r.priceM = null; });
-  (d.addons || []).forEach(a => { a.price = null; a.price = 0; delete a.cost; });
-  if (d.config) {
-    delete d.config.depositAmount;
-    delete d.config.orderRatio;
-    delete d.config.tailRatio;
-    delete d.config.customOrderAmount;
-    delete d.config.fullPayThreshold;
-    if (d.config.drawer) d.config.drawer.extraPrice = 0;
-    if (d.config.depthRule) d.config.depthRule.pricePerSqm = 0;
-    if (d.config.film) d.config.film.pricePerSqm = 0;
-    if (Array.isArray(d.config.hardwareUpgrades)) d.config.hardwareUpgrades.forEach(u => { u.price = 0; delete u.cost; });
-  }
-  (d.quotations || []).forEach(q => {
-    delete q.otherCost;
-    (q.cabinets || []).forEach(c => { c.priceInput = ''; c.hardwarePrice = ''; if (c.addonPrices) c.addonPrices = {}; });
-  });
+  (d.priceRules || []).forEach(r => { r.priceSqm = null; r.priceM = null; delete r.costSqm; });
+  (d.addons || []).forEach(a => { delete a.cost; });
+  if (d.config && Array.isArray(d.config.hardwareUpgrades)) d.config.hardwareUpgrades.forEach(u => { delete u.cost; });
+  if (d.config && d.config.drawer) delete d.config.drawer.costPrice;
+  (d.quotations || []).forEach(q => { delete q.otherCost; });
   return d;
+}
+
+/* 报价单归属：自己开的，或指派给自己填写的 */
+function canTouchQuote(q, username) {
+  return String(q.owner || '') === username || String(q.assignedTo || '') === username;
+}
+function hasDims(cab) {
+  if (!cab) return false;
+  const n = v => Number(v) || 0;
+  return cab.calcMode === 'meter' ? n(cab.length) > 0 : (n(cab.width) > 0 && n(cab.height) > 0);
 }
 
 /* 管理员用：成本字段只给 owner/super */
@@ -1141,7 +1140,7 @@ export default async function handler(req) {
         out.tenant = { id: tenant.id, name: tenant.name };
         const autoP = isDesigner && designerAuto(db, me);
         if (isDesigner) {
-          out.quotations = (out.quotations || []).filter(q => String(q.owner || '') === me.username);
+          out.quotations = (out.quotations || []).filter(q => canTouchQuote(q, me.username));
           if (!autoP) stripPrices(out);
         } else {
           stripCost(out);
@@ -1158,16 +1157,26 @@ export default async function handler(req) {
 
         if (isDesigner) {
           const my = String(me.username);
-          const own = (incoming.quotations || []).filter(q => String(q.owner || '') === my);
-          const others = (src.quotations || []).filter(q => String(q.owner || '') !== my);
+          const own = (incoming.quotations || []).filter(q => canTouchQuote(q, my));
+          const others = (src.quotations || []).filter(q => !canTouchQuote(q, my));
           const autoP2 = designerAuto(db, me);
-          own.forEach(q => { q.owner = my; q.status = q.status === 'draft' ? 'draft' : (autoP2 ? 'quoted' : 'filled'); });
+          own.forEach(q => {
+            if (!q.owner) q.owner = my;
+            if (q.status === 'draft') return;
+            const done = Array.isArray(q.cabinets) && q.cabinets.length && q.cabinets.every(hasDims);
+            if (q.preset) {
+              /* 预设单：尺寸填完 → 已报价；没填完 → 保持待填写 */
+              q.status = done ? 'quoted' : 'preset';
+            } else {
+              q.status = autoP2 ? 'quoted' : 'filled';
+            }
+          });
           const next = JSON.parse(JSON.stringify(src));
           next.quotations = own.concat(others);
           next.updatedAt = new Date().toISOString();
           const assigned = [];
           next.quotations.forEach(q => {
-            if (q && q.status && q.status !== 'draft' && !q.quotationNo) {
+            if (q && q.status && q.status !== 'draft' && q.status !== 'preset' && !q.quotationNo) {
               q.quotationNo = nextQuoteNo(next);
               if (String(q.owner || '') === String(me.username)) assigned.push({ id: q.id, quotationNo: q.quotationNo });
             }
@@ -1189,7 +1198,7 @@ export default async function handler(req) {
         };
         const assigned = [];
         next.quotations.forEach(q => {
-          if (q && q.status && q.status !== 'draft' && !q.quotationNo) {
+          if (q && q.status && q.status !== 'draft' && q.status !== 'preset' && !q.quotationNo) {
             q.quotationNo = nextQuoteNo(next);
             assigned.push({ id: q.id, quotationNo: q.quotationNo });
           }
