@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
@@ -994,6 +994,26 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
 
 /* ============ 设计师：能看到价格（预设单要拿给客户看），只隐藏商品库设置 ============ */
 
+/* ============ 不给设计师看价格 ============ */
+body.is-blind .cb-f-price,
+body.is-blind .cb-amt,
+body.is-blind .cb-addons,
+body.is-blind #sumLines,
+body.is-blind #sumTotals,
+body.is-blind #sumPay,
+body.is-blind #payModeHint,
+body.is-blind .summary-card .field-grid,
+body.is-blind .summary-card .sum-divider,
+body.is-blind .cb-f .cell-tag,
+body.is-blind .cab-global .g-item:has([data-gcf="priceInput"]) { display: none !important; }
+body.is-blind .summary-card .sum-total { display: none !important; }
+body.is-blind .data thead th:nth-child(6),
+body.is-blind .data tbody td:nth-child(6) { display: none !important; }
+body.is-blind .workspace { padding-right: 0; }
+body.is-blind .summary-card {
+  position: static; width: auto; box-shadow: none; margin-top: 12px;
+}
+
 /* ============ 总账号门店控制台 ============ */
 .tc-wrap { max-width: 1000px; margin: 24px auto; padding: 0 16px; }
 .tc-card { background: #fff; border-radius: 10px; padding: 18px 20px; box-shadow: 0 8px 24px rgba(16,24,40,.08); margin-bottom: 16px; }
@@ -1088,6 +1108,18 @@ body.is-designer .summary-card h2 { font-size: 13px; }
 .asg-item:hover { border-color: #1f4e79; background: #eef4fa; }
 .asg-item small { color: #94a3b8; margin-left: 8px; font-size: 11px; }
 .asg-acts { display: flex; justify-content: flex-end; margin-top: 14px; }
+
+/* 价格方案：单独 / 跟随 */
+.cell-tag.own { color: #1f4e79; background: #e6f0fa; border-radius: 6px; padding: 0 5px; font-weight: 700; }
+.warn-btn { color: #b45309; border-color: #e6c98a; background: #fffbf0; }
+.warn-btn:hover { background: #fdf3e3; }
+
+/* ============ 预设报价页 ============ */
+.preset-foot {
+  display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap;
+  margin-top: 16px; padding-top: 14px; border-top: 1px dashed #e6edf5;
+}
+.preset-foot .grow { flex: 1; }
 </style>
 </head>
 <body>
@@ -1127,6 +1159,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
   </div>
   <nav class="tabs">
     <button type="button" data-tab="booking" class="active">报价开单</button>
+    <button type="button" data-tab="preset" id="presetTab" class="hidden">预设报价</button>
     <button type="button" data-tab="history">报价记录</button>
     <button type="button" data-tab="cost" id="costTab" class="hidden">成本毛利</button>
     <button type="button" data-tab="settings">商品库设置</button>
@@ -2037,6 +2070,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
       hardwareName: '',
       hardwarePrice: '',
       priceInput: '',
+      follow: true,
       film: true,
       addons: {},
       addonPrices: {},
@@ -2217,6 +2251,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
     if (tab === 'booking') view.innerHTML = renderBooking();
     else if (tab === 'history') view.innerHTML = renderHistory();
     else if (tab === 'cost') view.innerHTML = renderCost();
+    else if (tab === 'preset') view.innerHTML = renderPreset();
     else view.innerHTML = renderSettings();
     updateSummary();
   }
@@ -2353,7 +2388,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
       '<div class="g-item"><label>单价</label>' +
         '<input type="text" inputmode="decimal" data-num="1" data-gcf="priceInput" value="' + (gPriceSame !== null ? esc(gPriceSame) : '') + '"' +
         (gLocked ? ' readonly title="已匹配后台价格组合"' : ' placeholder="统一手填价"') + '></div>' +
-      '<span class="g-hint">只改「跟随统一值」的柜体</span>' +
+      '<span class="g-hint">整单默认：' + followCount().on + ' 个柜体跟随' + (followCount().off ? '，' + followCount().off + ' 个已单独设置' : '') + '</span>' +
       '<button type="button" class="btn small g-force" data-act="forceGlobalAll" title="把当前统一值套到全部柜体，包括单独改过的">全部强制统一</button>' +
     '</div>';
   }
@@ -2550,8 +2585,8 @@ body.is-designer .summary-card h2 { font-size: 13px; }
           '<span class="cb-f cb-f-price"><i>单价</i>' +
             '<input class="cell-price" type="text" inputmode="decimal" data-num="1" data-cf="priceInput" value="' + esc(cr.price || cab.priceInput) + '"' +
             ' title="' + esc(priceExplain(cab, cr)) + '">' +
-            '<em class="cell-tag ' + (priceDiffFromBackend(cab) !== null ? 'edit' : (backendPrice !== null ? 'ok' : 'warn')) + '">' +
-              (priceDiffFromBackend(cab) !== null ? '手改' : (backendPrice !== null ? '后台' : '手填')) + '</em></span>' +
+            '<em class="cell-tag ' + (cab.follow === false ? 'own' : (priceDiffFromBackend(cab) !== null ? 'edit' : (backendPrice !== null ? 'ok' : 'warn'))) + '">' +
+              (cab.follow === false ? '单独' : (priceDiffFromBackend(cab) !== null ? '手改' : (backendPrice !== null ? '后台' : '手填'))) + '</em></span>' +
           '<span class="cb-amt"><b id="cabamt-' + esc(cab.id) + '">¥' + fmt(cr.subtotal) + '</b>' +
             '<small id="cabqty-' + esc(cab.id) + '">' + (cr.qty > 0 ? fmtQty(cr.qty) + ' ' + cr.unit : '—') + '</small></span>' +
         '</span>' +
@@ -2578,6 +2613,9 @@ body.is-designer .summary-card h2 { font-size: 13px; }
             '<span id="cabaddonbtn-' + esc(cab.id) + '">增项' + (addonCount ? ' ' + addonCount : '') + '</span></button>' +
           (window.__CTX && window.__CTX.canPrice
             ? '<button type="button" class="btn small" data-act="compare" data-id="' + esc(cab.id) + '" title="按这个柜体的尺寸，比较不同品牌 / 材质的报价">比价</button>'
+            : '') +
+          (cab.follow === false
+            ? '<button type="button" class="btn small warn-btn" data-act="followPlan" data-id="' + esc(cab.id) + '" title="恢复成整单默认的品牌 / 材质 / 五金 / 单价">跟随整单</button>'
             : '') +
           '<button type="button" class="btn small" data-act="addSameSpace" data-id="' + esc(cab.id) + '" title="按这个柜体的空间 / 品牌 / 材质 / 单价，再加一个柜体（尺寸留空）">＋同空间</button>' +
           '<button type="button" class="btn small" data-act="sameAsPrev" data-id="' + esc(cab.id) + '"' +
@@ -2959,6 +2997,142 @@ body.is-designer .summary-card h2 { font-size: 13px; }
 
   /* ================= 数据体检 ================= */
   /* 商品库自身矛盾：重名、漏填、成本倒挂、延米价异常、选项缺失 */
+
+  /* ================= 预设报价（财务专用） ================= */
+  let PRESET = null;
+
+  function presetNew() {
+    const cfg = DB.config;
+    return {
+      customer: { name: '', phone: '', address: '' },
+      assignedTo: '',
+      rows: [presetRow()]
+    };
+  }
+  function presetRow() {
+    const cfg = DB.config;
+    const r = {
+      space: (cfg.spaces && cfg.spaces[0]) || '主人房',
+      type: firstCabTypeName(),
+      brand: (allBrandNames()[0]) || '',
+      cabinetMaterial: (cfg.cabinetMaterials && cfg.cabinetMaterials[0]) || '',
+      doorMaterial: (cfg.doorMaterials && cfg.doorMaterials[0]) || '',
+      priceInput: ''
+    };
+    r.priceInput = presetAutoPrice(r);
+    return r;
+  }
+  function presetAutoPrice(row) {
+    const probe = {
+      brand: row.brand, cabinetMaterial: row.cabinetMaterial, doorMaterial: row.doorMaterial,
+      calcMode: 'area', brandCustom: '', cabinetMaterialCustom: '', doorMaterialCustom: ''
+    };
+    const p = resolveBackendPrice(probe);
+    return p === null ? '' : String(p);
+  }
+
+  function renderPreset() {
+    if (!PRESET) PRESET = presetNew();
+    const cfg = DB.config;
+    const brands = allBrandNames();
+    const opts = (arr, cur) => (arr || []).map(v =>
+      '<option value="' + esc(v) + '"' + (v === cur ? ' selected' : '') + '>' + esc(v) + '</option>').join('');
+
+    const rows = PRESET.rows.map((r, i) =>
+      '<tr>' +
+        '<td class="center">' + (i + 1) + '</td>' +
+        '<td><input class="mini-input" data-pf="space" data-idx="' + i + '" value="' + esc(r.space) + '" placeholder="空间" style="width:100px"></td>' +
+        '<td><select data-pf="type" data-idx="' + i + '" style="width:92px">' + opts((cfg.cabinetTypes || []).map(t => typeof t === 'string' ? t : t.name).filter(t => {
+          const def = (cfg.cabinetTypes || []).find(x => (typeof x === 'string' ? x : x.name) === t);
+          return !def || def.enabled !== false;
+        }), r.type) + '</select></td>' +
+        '<td><select data-pf="brand" data-idx="' + i + '" style="width:96px">' + opts(brands, r.brand) + '</select></td>' +
+        '<td><select data-pf="cabinetMaterial" data-idx="' + i + '" style="width:110px">' + opts(cfg.cabinetMaterials, r.cabinetMaterial) + '</select></td>' +
+        '<td><select data-pf="doorMaterial" data-idx="' + i + '" style="width:110px">' + opts(cfg.doorMaterials, r.doorMaterial) + '</select></td>' +
+        '<td class="num"><input class="mini-input" data-pf="priceInput" data-idx="' + i + '" data-num="1" value="' + esc(r.priceInput) + '" placeholder="元/㎡" style="width:84px"></td>' +
+        '<td class="num"><button class="btn small danger" data-act="pdel" data-idx="' + i + '">删</button></td>' +
+      '</tr>').join('');
+
+    const designers = (USERS || []).filter(u => u.role === 'designer' && !u.disabled);
+    const dzOpts = '<option value="">— 选择设计师 —</option>' + designers.map(u =>
+      '<option value="' + esc(u.username) + '"' + (PRESET.assignedTo === u.username ? ' selected' : '') + '>' + esc(u.username) + '</option>').join('');
+
+    return '<section class="card">' +
+      '<h2>预设报价 <span class="badge">填材料 + 单价，尺寸交给设计师</span></h2>' +
+      '<div class="hint" style="margin-bottom:12px">这里只要定好材料和单价，保存后指派给设计师。设计师登录后只看到这一单，填完尺寸就自动算好，可以当场给客户看。</div>' +
+      '<div class="field-grid two" style="gap:10px">' +
+        '<div class="field"><label>客户姓名（可选）</label><input data-pc="name" value="' + esc(PRESET.customer.name) + '" placeholder="可留空"></div>' +
+        '<div class="field"><label>联系电话（可选）</label><input data-pc="phone" value="' + esc(PRESET.customer.phone) + '" placeholder="可留空"></div>' +
+      '</div>' +
+      '<div class="field" style="margin-top:10px"><label>安装地址（可选）</label><input data-pc="address" value="' + esc(PRESET.customer.address) + '" placeholder="可留空，报价单文件名会用它"></div>' +
+      '<div class="table-wrap" style="margin-top:14px"><table class="data">' +
+        '<thead><tr><th class="center">#</th><th>空间</th><th>类型</th><th>板材品牌</th><th>柜体材质</th><th>门板材质</th><th style="text-align:right">单价</th><th></th></tr></thead>' +
+        '<tbody>' + rows + '</tbody>' +
+      '</table></div>' +
+      '<div style="margin-top:10px"><button class="btn small" data-act="padd">＋ 添加柜体</button></div>' +
+      '<div class="preset-foot">' +
+        '<div class="field" style="margin:0"><label>指派给设计师</label><select id="presetWho" style="min-width:180px">' + dzOpts + '</select></div>' +
+        '<div class="grow"></div>' +
+        '<button class="btn" data-act="preset" data-preset="clear">清空</button>' +
+        '<button class="btn primary" data-act="preset" data-preset="save">保存并指派</button>' +
+      '</div>' +
+      (designers.length ? '' : '<div class="hint warn" style="margin-top:10px">这个门店还没有设计师账号，请先到「商品库设置 → 账号安全」新增。</div>') +
+    '</section>';
+  }
+
+  function presetSave() {
+    if (!PRESET) return;
+    const who = ($('#presetWho') || {}).value || '';
+    if (!PRESET.rows.length) { toast('至少要有一个柜体', true); return; }
+    if (!who) { toast('请选择要指派的设计师', true); return; }
+    const bad = PRESET.rows.findIndex(r => !r.brand || !r.cabinetMaterial || !r.doorMaterial);
+    if (bad >= 0) { toast('第 ' + (bad + 1) + ' 个柜体的材料没选全', true); return; }
+    const noPrice = PRESET.rows.findIndex(r => !(num(r.priceInput) > 0));
+    if (noPrice >= 0) { toast('第 ' + (noPrice + 1) + ' 个柜体单价是 0', true); return; }
+
+    const now = new Date().toISOString();
+    const q = {
+      id: uid('q'),
+      owner: (ME && ME.username) || '',
+      assignedTo: who,
+      preset: true,
+      status: 'preset',
+      quotationNo: '',
+      customer: {
+        name: String(PRESET.customer.name || '').trim(),
+        phone: String(PRESET.customer.phone || '').trim(),
+        address: String(PRESET.customer.address || '').trim()
+      },
+      cabinets: PRESET.rows.map(r => ({
+        id: uid('c'),
+        space: r.space, type: r.type, name: '',
+        calcMode: MODE_AREA, dimUnit: 'mm',
+        width: '', height: '', length: '', depth: '600', depth2: '', drawerQty: '', remark: '',
+        brand: r.brand, brandCustom: '',
+        cabinetMaterial: r.cabinetMaterial, cabinetMaterialCustom: '',
+        doorMaterial: r.doorMaterial, doorMaterialCustom: '',
+        hardwareName: '', hardwarePrice: '',
+        priceInput: String(num(r.priceInput)), priceManual: true, follow: true,
+        film: true, addons: {}, addonPrices: {}, addonSpecs: {}, addonDiscounts: {}, customAddons: []
+      })),
+      extraFees: [],
+      payment: {},
+      createdAt: now,
+      updatedAt: now
+    };
+    DB.quotations.unshift(q);
+    const btn = document.querySelector('[data-preset="save"]');
+    if (btn) { btn.disabled = true; btn.textContent = '保存中…'; }
+    putDb().then(() => {
+      toast('已下发给「' + who + '」，等设计师填尺寸');
+      PRESET = presetNew();
+      render();
+    }).catch(err => {
+      toast('保存失败：' + err.message, true);
+      if (btn) { btn.disabled = false; btn.textContent = '保存并指派'; }
+    });
+  }
+
   function healthCheck() {
     const issues = [];
     const cfg = DB.config || {};
@@ -3255,6 +3429,11 @@ body.is-designer .summary-card h2 { font-size: 13px; }
 
       '<section class="card">' +
         '<h2>选项管理 <span class="badge">空间 / 名称 / 类型 / 材质</span></h2>' +
+        '<div class="opt-box"><div class="opt-head">价格可见性</div>' +
+          '<label class="chk-line"><input type="checkbox" data-db="config.showPriceToDesigner"' + (c.showPriceToDesigner === false ? '' : ' checked') + '>' +
+          '<span>允许设计师看到价格（单价、金额、汇总）</span></label>' +
+          '<div class="hint">关闭后：设计师登录只能看到尺寸和柜体信息，所有价格、金额、合计全部隐藏，连单据里的单价也不会下发到他的电脑。</div>' +
+        '</div>' +
         '<div class="opt-box"><div class="opt-head">设计师出价</div>' +
           '<label class="chk-line"><input type="checkbox" data-db="config.designerAutoPrice"' + (c.designerAutoPrice ? ' checked' : '') + '>' +
           '<span>允许设计师直接出价：填完尺寸保存即为「已报价」，可以直接给客户看报价单</span></label>' +
@@ -3830,26 +4009,16 @@ body.is-designer .summary-card h2 { font-size: 13px; }
   }
 
   /* 找出「跟随统一设置」的柜体：值仍等于上次统一值（或当前多数值）的那些；其余视为已单独设置，批量时不动 */
+  /* 跟随整单的柜体：follow 不为 false 的都跟着走；单独改过的（follow=false）不动 */
   function followerTargets(f) {
-    const list = draft.cabinets;
-    const val = c => (f === 'hardwareName') ? hwOf(c).name
-      : (f === 'priceInput') ? String(effectiveUnitPrice(c)) : String(c[f] == null ? '' : c[f]);
-    let prev = (globalCab && globalCab[f] !== undefined) ? String(globalCab[f]) : null;
-    if (prev === null) {
-      /* 没有历史统一值时：全一致就用该值，否则取「多数值」作为跟随基准 */
-      const counts = {};
-      list.forEach(c => { const v = val(c); counts[v] = (counts[v] || 0) + 1; });
-      let best = null, bestN = 0, tie = false;
-      Object.keys(counts).forEach(k => {
-        if (counts[k] > bestN) { best = k; bestN = counts[k]; tie = false; }
-        else if (counts[k] === bestN) tie = true;
-      });
-      prev = (!tie && best !== null && bestN < list.length) ? best : (best !== null && !tie ? best : null);
-      if (bestN === list.length) prev = best;
-    }
-    if (prev === null) return { targets: list.slice(), skipped: 0, prev: null };
-    const targets = list.filter(c => val(c) === prev);
-    return { targets: targets, skipped: list.length - targets.length, prev: prev };
+    const list = (draft && draft.cabinets) || [];
+    const targets = list.filter(c => c.follow !== false);
+    return { targets: targets, skipped: list.length - targets.length, prev: null };
+  }
+
+  function followCount() {
+    const list = (draft && draft.cabinets) || [];
+    return { on: list.filter(c => c.follow !== false).length, off: list.filter(c => c.follow === false).length };
   }
 
   function handleGlobalCabField(el) {
@@ -3980,6 +4149,11 @@ body.is-designer .summary-card h2 { font-size: 13px; }
     }
 
     setPath(cab, f, v);
+
+    /* 单独改了品牌 / 材质 / 五金 / 单价 → 这个柜体不再跟随整单 */
+    const planFields = ['brand', 'brandCustom', 'cabinetMaterial', 'cabinetMaterialCustom',
+      'doorMaterial', 'doorMaterialCustom', 'hardwareName', 'hardwarePrice', 'priceInput'];
+    if (planFields.indexOf(f) >= 0) cab.follow = false;
 
     /* 手动改单价：标记为手改，覆盖后台价 */
     if (f === 'priceInput') {
@@ -4125,6 +4299,25 @@ body.is-designer .summary-card h2 { font-size: 13px; }
         const r = readNum(el);
         if (r !== null) { f.amount = r; updateSummary(); }
       }
+      return;
+    }
+    if (el.dataset.pf) {
+      if (!PRESET) PRESET = presetNew();
+      const i = Number(el.dataset.idx);
+      const row = PRESET.rows[i];
+      if (!row) return;
+      const f = el.dataset.pf;
+      row[f] = el.value;
+      if (f === 'brand' || f === 'cabinetMaterial' || f === 'doorMaterial') {
+        row.priceInput = presetAutoPrice(row);
+        const inp = document.querySelector('[data-pf="priceInput"][data-idx="' + i + '"]');
+        if (inp) inp.value = row.priceInput;
+      }
+      return;
+    }
+    if (el.dataset.pc) {
+      if (!PRESET) PRESET = presetNew();
+      PRESET.customer[el.dataset.pc] = el.value;
       return;
     }
     if (el.dataset.search !== undefined) {
@@ -4504,7 +4697,41 @@ body.is-designer .summary-card h2 { font-size: 13px; }
         break;
       }
       case 'compare': openCompare(id); break;
+      case 'padd': {
+        if (!PRESET) PRESET = presetNew();
+        PRESET.rows.push(presetRow());
+        $('#view').innerHTML = renderPreset();
+        break;
+      }
+      case 'pdel': {
+        if (!PRESET) break;
+        PRESET.rows.splice(Number(t.dataset.idx), 1);
+        if (!PRESET.rows.length) PRESET.rows.push(presetRow());
+        $('#view').innerHTML = renderPreset();
+        break;
+      }
+      case 'preset': {
+        const act = t.dataset.preset;
+        if (act === 'clear') { PRESET = presetNew(); $('#view').innerHTML = renderPreset(); break; }
+        if (act === 'save') presetSave();
+        break;
+      }
       case 'assign': openAssign(); break;
+      case 'followPlan': {
+        const cab = draft.cabinets.find(c => c.id === id);
+        if (!cab) break;
+        cab.follow = true;
+        /* 用统一设置里的当前值覆盖 */
+        ['brand', 'brandCustom', 'cabinetMaterial', 'cabinetMaterialCustom', 'doorMaterial', 'doorMaterialCustom',
+         'hardwareName', 'hardwarePrice', 'priceInput'].forEach(f => {
+          if (globalCab && globalCab[f] !== undefined && globalCab[f] !== null && globalCab[f] !== '') cab[f] = globalCab[f];
+        });
+        cab.priceManual = false;
+        applyAutoPrice(cab);
+        render();
+        toast('已恢复跟随整单');
+        break;
+      }
       case 'logout': doLogout(); break;
       case 'changePw': {
         const o = ($('#pwOld') || {}).value || '';
@@ -4775,6 +5002,10 @@ body.is-designer .summary-card h2 { font-size: 13px; }
     if (name === 'settings') {
       Promise.all([loadUsers(), loadLogs()]).then(() => { if (tab === 'settings') $('#view').innerHTML = renderSettings(); }).catch(() => {});
     }
+    if (name === 'preset') {
+      /* 预设页要选设计师，先把账号列表拉回来 */
+      loadUsers().then(() => { if (tab === 'preset') $('#view').innerHTML = renderPreset(); }).catch(() => {});
+    }
   }
 
   /* ================= 账号 ================= */
@@ -5012,6 +5243,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
       cab.cabinetMaterial = parts[1]; cab.cabinetMaterialCustom = '';
       cab.doorMaterial = parts[2]; cab.doorMaterialCustom = '';
       cab.priceManual = false;
+      cab.follow = false;
       applyAutoPrice(cab);
       box.remove();
       render();
@@ -5092,6 +5324,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
       }
       document.body.classList.add('role-' + ((sj.ctx && sj.ctx.role) || 'designer'));
       if (sj.ctx && sj.ctx.canPrice === false) document.body.classList.add('is-designer');
+      if (sj.ctx && sj.ctx.showPrice === false) document.body.classList.add('is-blind');
       if (ME) {
         const un = $('#userName');
         if (un) un.textContent = ME.username;
@@ -5099,10 +5332,12 @@ body.is-designer .summary-card h2 { font-size: 13px; }
           const bar = $('#mustChangeBar');
           if (bar) bar.classList.remove('hidden');
         }
-        /* 「成本毛利」页只给能定价的账号看（门店主账号 / 总账号） */
+        /* 「成本毛利」「预设报价」只给能定价的账号看（门店主账号 / 总账号） */
         if (sj.ctx && sj.ctx.canPrice) {
           const ct = $('#costTab');
           if (ct) ct.classList.remove('hidden');
+          const pt = $('#presetTab');
+          if (pt) pt.classList.remove('hidden');
         }
       }
       await loadDb();
