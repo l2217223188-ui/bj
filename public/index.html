@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
@@ -991,6 +991,110 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
 .login-overlay.hidden { display: none !important; }
 .login-overlay .login-card { width: 100%; max-width: 380px; }
 
+
+/* ============ 设计师：隐藏一切价格 ============ */
+body.is-designer .cb-f-price,
+body.is-designer .cb-amt,
+body.is-designer .cb-addons,
+body.is-designer #sumLines,
+body.is-designer #sumTotals,
+body.is-designer #sumPay,
+body.is-designer #payModeHint,
+body.is-designer .summary-card .field-grid,
+body.is-designer .summary-card .sum-divider,
+body.is-designer .cb-f .cell-tag,
+body.is-designer .addon-btn,
+body.is-designer .summary-actions [data-act="preview"] { display: none !important; }
+body.is-designer .workspace { padding-right: 0; }
+body.is-designer .summary-card {
+  position: static; width: auto; box-shadow: none; margin-top: 12px;
+}
+body.is-designer .summary-card h2 .badge { display: inline; }
+
+/* ============ 总账号门店控制台 ============ */
+.tc-wrap { max-width: 1000px; margin: 24px auto; padding: 0 16px; }
+.tc-card { background: #fff; border-radius: 10px; padding: 18px 20px; box-shadow: 0 8px 24px rgba(16,24,40,.08); margin-bottom: 16px; }
+.tc-card h2 { margin: 0 0 12px; font-size: 16px; }
+.tc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.tc-item { border: 1px solid #e3eaf2; border-radius: 8px; padding: 12px 14px; background: #fbfdff; }
+.tc-item h3 { margin: 0 0 4px; font-size: 14px; color: #1f4e79; }
+.tc-item .tc-meta { font-size: 11.5px; color: #94a3b8; margin-bottom: 8px; }
+.tc-item .tc-acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.tc-form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end; }
+.tc-form .field { margin: 0; }
+.tc-empty { color: #94a3b8; font-size: 12.5px; padding: 10px 0; }
+body.is-super-root .tabs { display: none; }
+body.is-super-root .topbar-right .who { color: #fff; }
+
+/* 设计师：隐藏 统一设置里的单价、报价记录金额列、商品库设置 */
+body.is-designer .cab-global .g-item:has([data-gcf="priceInput"]) { display: none !important; }
+body.is-designer .data thead th:nth-child(6),
+body.is-designer .data tbody td:nth-child(6) { display: none !important; }
+body.is-designer [data-tab="settings"] { display: none !important; }
+body.is-designer .summary-card h2 { font-size: 13px; }
+
+/* 顶栏门店标识 */
+.tenant-badge {
+  font-size: 11.5px; color: #fff; background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.3); border-radius: 8px; padding: 2px 8px;
+}
+.role-badge {
+  font-size: 11px; border-radius: 8px; padding: 2px 7px;
+  background: rgba(255,255,255,.22); color: #fff;
+}
+.back-super-btn {
+  border: 1px solid rgba(255,255,255,.35); background: rgba(255,255,255,.12);
+  color: #fff; border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer;
+}
+.back-super-btn:hover { background: rgba(255,255,255,.22); }
+
+
+/* ============ 比价弹窗 ============ */
+.cmp-overlay {
+  position: fixed; inset: 0; z-index: 300; background: rgba(12,26,42,.5);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.cmp-card {
+  background: #fff; border-radius: 12px; width: 100%; max-width: 820px;
+  max-height: 86vh; overflow: auto; padding: 20px 22px;
+  box-shadow: 0 24px 60px rgba(6,24,44,.4);
+}
+.cmp-card h3 { margin: 0 0 6px; font-size: 15px; }
+.cmp-tip { font-size: 12px; color: #64748b; margin: 0 0 12px; line-height: 1.7; }
+.cmp-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.cmp-table th {
+  text-align: left; font-weight: 500; color: #64748b; font-size: 11.5px;
+  padding: 7px 8px; border-bottom: 1px solid #e3eaf2; background: #f7fafd; white-space: nowrap;
+}
+.cmp-table td { padding: 7px 8px; border-bottom: 1px solid #eef3f8; }
+.cmp-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.cmp-table tr.cmp-cur { background: #eef4fa; }
+.cmp-table tr.cmp-cur td { font-weight: 600; }
+.cmp-up { color: #b45309; }
+.cmp-down { color: #15803d; }
+.cmp-acts { display: flex; justify-content: flex-end; margin-top: 14px; }
+
+/* ============ 设置：设计师出价开关 ============ */
+.chk-line { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #334155; cursor: pointer; padding: 8px 0; }
+.chk-line input { margin-top: 2px; width: 15px; height: 15px; accent-color: #1f4e79; cursor: pointer; }
+
+/* ============ 数据体检 ============ */
+.hk-err { color: #b91c1c; background: #fdecec; border-radius: 8px; padding: 1px 7px; font-size: 11px; font-weight: 600; }
+.hk-warn { color: #b45309; background: #fdf3e3; border-radius: 8px; padding: 1px 7px; font-size: 11px; }
+.hk-bad { background: #fdecec; color: #b91c1c; }
+.chk-overlay {
+  position: fixed; inset: 0; z-index: 320; background: rgba(12,26,42,.5);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.chk-card {
+  background: #fff; border-radius: 12px; width: 100%; max-width: 560px;
+  max-height: 82vh; overflow: auto; padding: 20px 22px;
+  box-shadow: 0 24px 60px rgba(6,24,44,.4);
+}
+.chk-card h3 { margin: 0 0 6px; font-size: 15px; color: #b45309; }
+.chk-tip { font-size: 12px; color: #64748b; margin: 0 0 10px; }
+.chk-list { margin: 0; padding-left: 20px; font-size: 12.5px; line-height: 1.9; color: #334155; }
+.chk-acts { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
 </style>
 </head>
 <body>
@@ -1211,7 +1315,7 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
   function handleAuthLost() {
     if (window.__authLost) return;
     window.__authLost = true;
-    try { alert('登录已失效（可能被停用、强制下线或密码已修改），请重新登录。'); } catch (e) {}
+    /* 静默处理：直接弹出登录层 */
     window.__showLogin && window.__showLogin();
   }
 
@@ -2138,7 +2242,7 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
       const margin = c.finalTotal > 0 ? round2(ct.profit / c.finalTotal * 100) : 0;
       const cls = ct.profit >= 0 ? (margin >= 25 ? 'ok' : 'warn') : 'bad';
       const st = q.status || 'quoted';
-      const stTxt = { draft: '草稿', quoted: '已报价', deal: '已成交', void: '已作废' }[st] || st;
+      const stTxt = { draft: '草稿', filled: '待报价', quoted: '已报价', deal: '已成交', void: '已作废' }[st] || st;
       return '<tr>' +
         '<td>' + esc(q.quotationNo || '（草稿）') + '</td>' +
         '<td>' + esc((q.customer && q.customer.name) || '—') + '</td>' +
@@ -2478,6 +2582,9 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
         '<span class="cb-acts">' +
           '<button type="button" class="btn small addon-btn' + (isOpen ? ' primary' : '') + (addonCount ? ' on' : '') + '" data-act="toggleAddons" data-id="' + esc(cab.id) + '">' +
             '<span id="cabaddonbtn-' + esc(cab.id) + '">增项' + (addonCount ? ' ' + addonCount : '') + '</span></button>' +
+          (window.__CTX && window.__CTX.canPrice
+            ? '<button type="button" class="btn small" data-act="compare" data-id="' + esc(cab.id) + '" title="按这个柜体的尺寸，比较不同品牌 / 材质的报价">比价</button>'
+            : '') +
           '<button type="button" class="btn small" data-act="addSameSpace" data-id="' + esc(cab.id) + '" title="按这个柜体的空间 / 品牌 / 材质 / 单价，再加一个柜体（尺寸留空）">＋同空间</button>' +
           '<button type="button" class="btn small" data-act="sameAsPrev" data-id="' + esc(cab.id) + '"' +
             (idx === 0 ? ' disabled title="第一个柜体没有可套用对象"' : ' title="套用上一柜的品牌 / 材质 / 单价"') + '>同上</button>' +
@@ -2745,7 +2852,7 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
     return list.map(item => {
       const c = calc(item);
       const st = item.status || 'quoted';
-      const stTxt = { draft: '草稿', quoted: '已报价', deal: '已成交', void: '已作废' }[st] || st;
+      const stTxt = { draft: '草稿', filled: '待报价', quoted: '已报价', deal: '已成交', void: '已作废' }[st] || st;
       const isDraft = (item.status === 'draft');
       const noTxt = item.quotationNo || (isDraft ? '（未编号·草稿）' : '—');
       return '<tr>' +
@@ -2855,6 +2962,219 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
       (rows || '<div class="hint">暂无</div>') + '</div>';
   }
 
+
+  /* ================= 数据体检 ================= */
+  /* 商品库自身矛盾：重名、漏填、成本倒挂、延米价异常、选项缺失 */
+  function healthCheck() {
+    const issues = [];
+    const cfg = DB.config || {};
+    const rules = DB.priceRules || [];
+    const addons = DB.addons || [];
+    const hw = cfg.hardwareUpgrades || [];
+    const push = (level, group, title, detail) => issues.push({ level: level, group: group, title: title, detail: detail });
+
+    /* 1. 价格组合重复（同品牌+同柜体材质+同门板材质） */
+    const comboMap = {};
+    rules.forEach((r, i) => {
+      const b = String(r.brand || '').trim();
+      const cm = String(r.cabinetMaterial || '').trim();
+      const dm = String(r.doorMaterial || '').trim();
+      if (!b || !cm || !dm) return;
+      const k = [b, cm, dm].join('|');
+      if (comboMap[k] === undefined) comboMap[k] = i;
+      else push('error', '价格表', '价格组合重复', '第 ' + (comboMap[k] + 1) + ' 行 与 第 ' + (i + 1) + ' 行 都是「' + b + ' + ' + cm + ' + ' + dm + '」，单价 ' + (rules[comboMap[k]].priceSqm || '—') + ' / ' + (r.priceSqm || '—') + '，报价时用哪一行不确定');
+    });
+
+    /* 2. 单价漏填 */
+    rules.forEach((r, i) => {
+      const p = num(r.priceSqm), m = num(r.priceM);
+      if (!(p > 0) && !(m > 0)) {
+        push('error', '价格表', '单价是 0 或空', '第 ' + (i + 1) + ' 行「' + (r.brand || '?') + ' + ' + (r.cabinetMaterial || '?') + ' + ' + (r.doorMaterial || '?') + '」没有单价，报价会算成 0');
+      }
+    });
+
+    /* 3. 成本 ≥ 售价（亏本） */
+    rules.forEach((r, i) => {
+      const p = num(r.priceSqm), c = num(r.costSqm);
+      if (p > 0 && c > 0 && c >= p) {
+        push('error', '价格表', '成本高于售价', '第 ' + (i + 1) + ' 行「' + (r.brand || '?') + ' + ' + (r.cabinetMaterial || '?') + '」售价 ' + p + '，成本 ' + c + '，每㎡倒亏 ' + round2(c - p));
+      } else if (p > 0 && c > 0 && (p - c) / p < 0.15) {
+        push('warn', '价格表', '毛利率偏低', '第 ' + (i + 1) + ' 行「' + (r.brand || '?') + ' + ' + (r.cabinetMaterial || '?') + '」毛利率只有 ' + round2((p - c) / p * 100) + '%');
+      }
+    });
+
+    /* 4. 延米价与投影价差异过大 */
+    rules.forEach((r, i) => {
+      const p = num(r.priceSqm), m = num(r.priceM);
+      if (p > 0 && m > 0 && Math.abs(m - p) / p > 0.05) {
+        push('warn', '价格表', '投影价 / 延米价不一致', '第 ' + (i + 1) + ' 行「' + (r.brand || '?') + '」投影 ' + p + ' 元/㎡，延米 ' + m + ' 元/米，差 ' + round2(Math.abs(m - p)) + '（若两者同价，延米栏应留空）');
+      }
+    });
+
+    /* 5. 价格表用了不在选项里的材质（下拉选不到，永远匹配不上） */
+    const cmList = cfg.cabinetMaterials || [];
+    const dmList = cfg.doorMaterials || [];
+    rules.forEach((r, i) => {
+      if (r.cabinetMaterial && cmList.indexOf(r.cabinetMaterial) < 0) {
+        push('warn', '价格表', '柜体材质不在选项里', '第 ' + (i + 1) + ' 行用了「' + r.cabinetMaterial + '」，但「选项管理 → 柜体材质」里没有它，开单时下拉选不到');
+      }
+      if (r.doorMaterial && dmList.indexOf(r.doorMaterial) < 0) {
+        push('warn', '价格表', '门板材质不在选项里', '第 ' + (i + 1) + ' 行用了「' + r.doorMaterial + '」，但「选项管理 → 门板材质」里没有它');
+      }
+    });
+
+    /* 6. 增项同名不同价 */
+    const addonMap = {};
+    addons.forEach((a, i) => {
+      const name = String(a.name || '').trim();
+      if (!name) { push('warn', '增项', '增项没名字', '第 ' + (i + 1) + ' 行增项名称为空'); return; }
+      if (!(num(a.price) > 0)) push('warn', '增项', '增项单价为 0', '「' + name + '」单价是 0');
+      if (addonMap[name] === undefined) addonMap[name] = a;
+      else if (num(addonMap[name].price) !== num(a.price)) {
+        push('error', '增项', '同名增项单价不同', '「' + name + '」出现两次：' + num(addonMap[name].price) + ' 元 / ' + num(a.price) + ' 元，开单时会算错');
+      }
+    });
+
+    /* 7. 五金方案同名不同价 */
+    const hwMap = {};
+    hw.forEach((u, i) => {
+      const name = String(u.name || '').trim();
+      if (!name) return;
+      if (hwMap[name] === undefined) hwMap[name] = u;
+      else if (num(hwMap[name].price) !== num(u.price)) {
+        push('error', '五金', '同名五金方案加价不同', '「' + name + '」：' + num(hwMap[name].price) + ' / ' + num(u.price));
+      }
+    });
+
+    /* 8. 选项重复 / 空白 */
+    const dupIn = (arr, label) => {
+      const seen = {};
+      (arr || []).forEach((v, i) => {
+        const s = String(v || '').trim();
+        if (!s) { push('warn', '选项', label + '有空行', '第 ' + (i + 1) + ' 项是空的'); return; }
+        if (seen[s] !== undefined) push('warn', '选项', label + '重复', '「' + s + '」出现了两次，下拉里会有两条一样的');
+        else seen[s] = i;
+      });
+    };
+    dupIn(cfg.spaces, '空间名称');
+    dupIn(cfg.cabinetNames, '柜子名称');
+    dupIn(cfg.cabinetMaterials, '柜体材质');
+    dupIn(cfg.doorMaterials, '门板材质');
+    const typeSeen = {};
+    (cfg.cabinetTypes || []).forEach((t, i) => {
+      const nm = typeof t === 'string' ? t : (t.name || '');
+      const s = String(nm).trim();
+      if (!s) { push('warn', '选项', '柜体类型有空行', '第 ' + (i + 1) + ' 个类型没名字'); return; }
+      if (typeSeen[s] !== undefined) push('warn', '选项', '柜体类型重复', '「' + s + '」出现两次');
+      else typeSeen[s] = i;
+    });
+
+    /* 9. 报价单里同组合不同单价（历史单据） */
+    const qList = DB.quotations || [];
+    const badQuotes = new Set();
+    qList.forEach(q => {
+      const m = {};
+      (q.cabinets || []).forEach(cab => {
+        const key = [effName(cab, 'brand'), effName(cab, 'cabinetMaterial'), effName(cab, 'doorMaterial')].join('|');
+        const p = effectiveUnitPrice(cab);
+        if (!p || key === '||') return;
+        if (m[key] === undefined) m[key] = p;
+        else if (Math.abs(m[key] - p) > 0.005) badQuotes.add(q.quotationNo || '（草稿）');
+      });
+    });
+    badQuotes.forEach(no => push('warn', '报价单', '同一单里同材料单价不同', '单据 ' + no + ' 里，相同材料组合的柜体单价不一致，可能是手改过'));
+
+    return issues;
+  }
+
+
+  /* 保存前的风险清单：可以返回修改，也可以坚持保存 */
+  function showDraftWarn(probs) {
+    const old = document.querySelector('.chk-overlay');
+    if (old) old.remove();
+    const box = document.createElement('div');
+    box.className = 'chk-overlay';
+    box.innerHTML =
+      '<div class="chk-card">' +
+        '<h3>保存前发现 ' + probs.length + ' 处可能要确认的地方</h3>' +
+        '<p class="chk-tip">请看一眼，确认没问题可以继续保存。</p>' +
+        '<ul class="chk-list">' + probs.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul>' +
+        '<div class="chk-acts">' +
+          '<button type="button" class="btn" data-chk="back">返回修改</button>' +
+          '<button type="button" class="btn primary" data-chk="go">确认无误，继续保存</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(box);
+    box.addEventListener('click', e => {
+      const b = e.target.closest('[data-chk]');
+      if (!b) return;
+      box.remove();
+      if (b.dataset.chk === 'go') doSaveQuotation(true);
+    });
+  }
+
+  /* 数据体检卡片 */
+  function healthSection() {
+    const issues = healthCheck();
+    const errs = issues.filter(i => i.level === 'error');
+    const warns = issues.filter(i => i.level === 'warn');
+    const badge = issues.length
+      ? (errs.length ? '发现 ' + errs.length + ' 个严重问题' : '发现 ' + warns.length + ' 个提醒')
+      : '全部正常';
+
+    const rows = issues.map(it =>
+      '<tr>' +
+        '<td>' + (it.level === 'error' ? '<span class="hk-err">严重</span>' : '<span class="hk-warn">提醒</span>') + '</td>' +
+        '<td>' + esc(it.group) + '</td>' +
+        '<td><b>' + esc(it.title) + '</b></td>' +
+        '<td>' + esc(it.detail) + '</td>' +
+      '</tr>').join('');
+
+    return '<section class="card" id="secHealth">' +
+      '<h2>数据体检 <span class="badge' + (errs.length ? ' hk-bad' : '') + '">' + badge + '</span>' +
+        '<button class="btn small" data-act="recheck" style="margin-left:auto">重新检查</button></h2>' +
+      '<div class="hint" style="margin-bottom:10px">自动扫描价格表、增项、五金、选项里的矛盾（重名、漏填、成本倒挂、材质对不上等），避免人为录错导致报价出错。</div>' +
+      (issues.length
+        ? '<div class="table-wrap" style="max-height:340px;overflow:auto"><table class="data">' +
+            '<thead><tr><th>级别</th><th>位置</th><th>问题</th><th>说明</th></tr></thead>' +
+            '<tbody>' + rows + '</tbody></table></div>'
+        : '<div class="empty" style="padding:16px 0">✔ 没发现问题，数据一致</div>') +
+    '</section>';
+  }
+
+  /* 开单前检查：当前这张单的风险点 */
+  function checkDraft() {
+    const out = [];
+    const cabs = draft.cabinets || [];
+    cabs.forEach((cab, i) => {
+      const cr = calcCabinet(cab, DB.config);
+      if (!(cr.qty > 0)) out.push('柜体 ' + (i + 1) + '「' + cabLabel(cab) + '」尺寸没填完，金额会算成 0');
+      else if (num(cab.depth) <= 0) out.push('柜体 ' + (i + 1) + '「' + cabLabel(cab) + '」没填深度');
+    });
+
+    const byCombo = {};
+    cabs.forEach((cab, i) => {
+      const key = [effName(cab, 'brand'), effName(cab, 'cabinetMaterial'), effName(cab, 'doorMaterial')].join('|');
+      const p = effectiveUnitPrice(cab);
+      if (!p || key === '||') return;
+      if (byCombo[key] === undefined) byCombo[key] = { p: p, idx: i + 1 };
+      else if (Math.abs(byCombo[key].p - p) > 0.005) {
+        out.push('柜体 ' + (i + 1) + ' 和柜体 ' + byCombo[key].idx + ' 是同一种材料组合，单价却不同（' + fmt(byCombo[key].p) + ' / ' + fmt(p) + '）');
+      }
+    });
+
+    const seen = {};
+    cabs.forEach((cab, i) => {
+      const nm = String(cab.name || '').trim();
+      if (!nm) return;
+      const k = String(cab.space || '').trim() + '|' + nm;
+      if (seen[k]) out.push('柜体 ' + (i + 1) + ' 与柜体 ' + seen[k] + ' 同空间同名（' + (cab.space || '') + ' · ' + nm + '），可能重复录入');
+      else seen[k] = i + 1;
+    });
+
+    return out;
+  }
+
   function renderSettings() {
     const c = DB.config;
     /* 普通账号只能改自己的密码，价格表 / 选项 / 门店信息由管理员维护 */
@@ -2898,6 +3218,7 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
 
     return '<div class="settings-grid">' +
 
+      healthSection() +
       '<section class="card">' +
         '<h2>门店信息</h2>' +
         '<div class="field-grid two">' +
@@ -2940,6 +3261,11 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
 
       '<section class="card">' +
         '<h2>选项管理 <span class="badge">空间 / 名称 / 类型 / 材质</span></h2>' +
+        '<div class="opt-box"><div class="opt-head">设计师出价</div>' +
+          '<label class="chk-line"><input type="checkbox" data-db="config.designerAutoPrice"' + (c.designerAutoPrice ? ' checked' : '') + '>' +
+          '<span>允许设计师直接出价：填完尺寸保存即为「已报价」，可以直接给客户看报价单</span></label>' +
+          '<div class="hint">关闭时：设计师保存后是「待报价」，要等主账号定价。开启后：按价格表自动出价，设计师也能看到价格。</div>' +
+        '</div>' +
         optionEditor('空间名称', 'config.spaces', c.spaces) +
         optionEditor('柜子名称库', 'config.cabinetNames', c.cabinetNames) +
         cabTypeEditor(c.cabinetTypes) +
@@ -3363,10 +3689,15 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
     doSaveQuotation();
   }
 
-  async function doSaveQuotation() {
+  async function doSaveQuotation(skipCheck) {
     if (!draft.cabinets.length) { toast('请至少添加一个柜体', true); return; }
+    if (!skipCheck) {
+      const probs = checkDraft();
+      if (probs.length) { showDraftWarn(probs); return; }
+    }
     const c = calc(draft);
-    if (c.subtotal <= 0) { toast('报价金额为 0，请检查尺寸与单价', true); return; }
+    const noPrice = !!(window.__CTX && window.__CTX.canPrice === false);
+    if (c.subtotal <= 0 && !noPrice) { toast('报价金额为 0，请检查尺寸与单价', true); return; }
 
     const now = new Date().toISOString();
     /* 归属：新建时记当前账号；管理员打开别人的单保存时不改归属 */
@@ -3375,7 +3706,9 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
     /* 编号由服务端统一分配（多人同时开单不会撞号） */
     if (!draft.createdAt) draft.createdAt = now;
     draft.updatedAt = now;
-    if (draft.status === 'draft') draft.status = 'quoted';
+    if (draft.status === 'draft' || draft.status === 'filled') {
+      draft.status = (window.__CTX && window.__CTX.canPrice === false) ? 'filled' : 'quoted';
+    }
 
     const idx = DB.quotations.findIndex(x => x.id === draft.id);
     if (idx >= 0) DB.quotations[idx] = clone(draft);
@@ -3974,10 +4307,19 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
   function listTarget(act, path) {
     const map = {
       'config.spaces': DB.config.spaces,
+      'config.cabinetNames': DB.config.cabinetNames,
       'config.cabinetMaterials': DB.config.cabinetMaterials,
       'config.doorMaterials': DB.config.doorMaterials
     };
-    return map[path] || null;
+    if (map[path]) return map[path];
+    /* 兜底：按路径从 DB 里取数组，避免以后加新选项又忘了登记 */
+    let obj = DB;
+    const seg = String(path || '').split('.');
+    for (let i = 0; i < seg.length; i++) {
+      if (!obj) return null;
+      obj = obj[seg[i]];
+    }
+    return Array.isArray(obj) ? obj : null;
   }
 
   function onViewClick(e) {
@@ -4167,6 +4509,7 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
         if (inp) openComboPop(inp, hwOptionList());
         break;
       }
+      case 'compare': openCompare(id); break;
       case 'logout': doLogout(); break;
       case 'changePw': {
         const o = ($('#pwOld') || {}).value || '';
@@ -4445,7 +4788,7 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
   let LOGS = [];
   let histOwnerFilter = '';
 
-  function isAdmin() { return !!ME && (ME.role || 'user') === 'admin'; }
+  function isAdmin() { return !!ME && ['admin', 'owner', 'super'].indexOf(ME.role || '') >= 0; }
 
   function loadLogs() {
     if (!isAdmin()) return Promise.resolve();
@@ -4487,10 +4830,10 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
         '<td>' + esc(u.username) + (isMe ? ' <small class="tag-me">当前</small>' : '') + '</td>' +
         '<td>' + (amAdmin && !isMe
           ? '<select class="role-sel" data-roleuser="' + esc(u.id) + '" data-name="' + esc(u.username) + '">' +
-              '<option value="user"' + (u.role !== 'admin' ? ' selected' : '') + '>普通</option>' +
-              '<option value="admin"' + (u.role === 'admin' ? ' selected' : '') + '>管理员</option>' +
+              '<option value="designer"' + (u.role !== 'owner' ? ' selected' : '') + '>设计师</option>' +
+              '<option value="owner"' + (u.role === 'owner' ? ' selected' : '') + '>主账号</option>' +
             '</select>'
-          : (u.role === 'admin' ? '管理员' : '普通')) + '</td>' +
+          : (u.role === 'owner' ? '主账号' : '设计师')) + '</td>' +
         '<td>' + (off ? '<span class="st-off">已停用</span>' : '<span class="st-on">启用中</span>') + '</td>' +
         (!amAdmin
           ? '<td class="num" style="color:#b6c2d1">—</td>'
@@ -4520,7 +4863,7 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
       '<div class="acct-title">新增账号</div>' +
       '<div class="field"><label>用户名（至少 2 个字符）</label><input type="text" id="newUserName" autocomplete="off"></div>' +
       '<div class="field"><label>初始密码（至少 6 位）</label><input type="text" id="newUserPw" autocomplete="off"></div>' +
-      '<div class="field"><label>角色</label><select id="newUserRole"><option value="user">普通</option><option value="admin">管理员</option></select></div>' +
+      '<div class="field"><label>角色</label><select id="newUserRole"><option value="designer">设计师</option></select></div>' +
       '<button type="button" class="btn small" data-act="addUser">添加账号</button>' +
     '</div>';
 
@@ -4559,6 +4902,86 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
       '</table></div>' +
       '<div class="hint" style="margin-top:8px">记录登录、登录失败、退出、改密码、账号管理、报价新建/修改/删除，以及价格表与设置的改动。</div>' +
     '</section>';
+  }
+
+
+  /* ================= 比价：同一个柜体，不同品牌/材质的报价 ================= */
+  function openCompare(cabId) {
+    const cab = (draft.cabinets || []).find(c => c.id === cabId);
+    if (!cab) return;
+    const cur = calcCabinet(cab, DB.config);
+    const curRule = findPriceRule(cab);
+    const rules = (DB.priceRules || []).filter(r => num(r.priceSqm) > 0 || num(r.priceM) > 0);
+
+    const seen = {};
+    const rows = [];
+    rules.forEach(r => {
+      const key = [r.brand, r.cabinetMaterial, r.doorMaterial].join('|');
+      if (seen[key]) return;
+      seen[key] = 1;
+      const probe = Object.assign({}, cab, {
+        brand: r.brand, brandCustom: '',
+        cabinetMaterial: r.cabinetMaterial, cabinetMaterialCustom: '',
+        doorMaterial: r.doorMaterial, doorMaterialCustom: '',
+        priceInput: '', priceManual: false
+      });
+      const cr = calcCabinet(probe, DB.config);
+      if (!(cr.qty > 0) || !(cr.price > 0)) return;
+      const isCur = curRule && curRule.id === r.id;
+      rows.push({ rule: r, cr: cr, isCur: isCur, diff: round2(cr.subtotal - cur.subtotal) });
+    });
+    rows.sort((a, b) => a.cr.subtotal - b.cr.subtotal);
+
+    const body = rows.map(x => {
+      const cls = x.isCur ? ' class="cmp-cur"' : '';
+      const diffTxt = x.diff === 0 ? '—'
+        : (x.diff > 0 ? '<span class="cmp-up">+¥' + fmt(x.diff) + '</span>' : '<span class="cmp-down">-¥' + fmt(-x.diff) + '</span>');
+      return '<tr' + cls + '>' +
+        '<td>' + esc(x.rule.brand || '') + '</td>' +
+        '<td>' + esc(x.rule.cabinetMaterial || '') + '</td>' +
+        '<td>' + esc(x.rule.doorMaterial || '') + '</td>' +
+        '<td class="num">' + fmt(x.cr.price) + '</td>' +
+        '<td class="num" style="font-weight:600">¥' + fmt(x.cr.subtotal) + '</td>' +
+        '<td class="num">' + diffTxt + '</td>' +
+        '<td class="num">' + (x.isCur ? '当前' :
+          '<button type="button" class="btn small primary" data-cmp-apply="' + esc([x.rule.brand, x.rule.cabinetMaterial, x.rule.doorMaterial].join('|')) + '">套用</button>') +
+        '</td>' +
+      '</tr>';
+    }).join('') || '<tr><td colspan="7"><div class="empty">没有可比较的价格组合</div></td></tr>';
+
+    const old = document.querySelector('.cmp-overlay');
+    if (old) old.remove();
+
+    const box = document.createElement('div');
+    box.className = 'cmp-overlay';
+    box.innerHTML =
+      '<div class="cmp-card">' +
+        '<h3>比价 · ' + esc(cabLabel(cab)) + '</h3>' +
+        '<p class="cmp-tip">按这个柜体的尺寸（' + (cur.qty > 0 ? fmtQty(cur.qty) + ' ' + cur.unit : '未填尺寸') + '）计算，' +
+          '客户想升级材料时可以直接报这个价格。含该柜的增项与加价。</p>' +
+        '<table class="cmp-table"><thead><tr>' +
+          '<th>板材品牌</th><th>柜体材质</th><th>门板材质</th>' +
+          '<th style="text-align:right">单价</th><th style="text-align:right">柜体合计</th>' +
+          '<th style="text-align:right">较当前</th><th></th>' +
+        '</tr></thead><tbody>' + body + '</tbody></table>' +
+        '<div class="cmp-acts"><button type="button" class="btn" data-cmp-close="1">关闭</button></div>' +
+      '</div>';
+    document.body.appendChild(box);
+
+    box.addEventListener('click', e => {
+      if (e.target === box || e.target.closest('[data-cmp-close]')) { box.remove(); return; }
+      const btn = e.target.closest('[data-cmp-apply]');
+      if (!btn) return;
+      const parts = btn.dataset.cmpApply.split('|');
+      cab.brand = parts[0]; cab.brandCustom = '';
+      cab.cabinetMaterial = parts[1]; cab.cabinetMaterialCustom = '';
+      cab.doorMaterial = parts[2]; cab.doorMaterialCustom = '';
+      cab.priceManual = false;
+      applyAutoPrice(cab);
+      box.remove();
+      render();
+      toast('已套用：' + parts.join(' + '));
+    });
   }
 
   function bindGlobal() {
@@ -4625,6 +5048,15 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
       if (!sres.ok) { window.__showLogin && window.__showLogin(); return; }
       const sj = await sres.json();
       ME = sj.user || null;
+      window.__CTX = sj.ctx || null;
+      window.__TENANTS = sj.tenants || [];
+      /* 总账号还没进门店 → 显示门店控制台 */
+      if (sj.ctx && sj.ctx.role === 'super' && !sj.ctx.tenantId) {
+        if (window.__renderSuperConsole) window.__renderSuperConsole();
+        return;
+      }
+      document.body.classList.add('role-' + ((sj.ctx && sj.ctx.role) || 'designer'));
+      if (sj.ctx && sj.ctx.canPrice === false) document.body.classList.add('is-designer');
       if (ME) {
         const un = $('#userName');
         if (un) un.textContent = ME.username;
@@ -4632,8 +5064,8 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
           const bar = $('#mustChangeBar');
           if (bar) bar.classList.remove('hidden');
         }
-        /* 「成本毛利」页只给管理员看 */
-        if ((ME.role || 'user') === 'admin') {
+        /* 「成本毛利」页只给能定价的账号看（门店主账号 / 总账号） */
+        if (sj.ctx && sj.ctx.canPrice) {
           const ct = $('#costTab');
           if (ct) ct.classList.remove('hidden');
         }
@@ -4698,5 +5130,154 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
 })();
 </script>
 
+
+<script>
+/* ================= 多门店：总账号控制台 + 顶栏 ================= */
+(function () {
+  'use strict';
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+    function tip(msg, isErr) {
+    var el = document.getElementById('tcTip');
+    if (!el) { el = document.createElement('div'); el.id = 'tcTip'; el.style.cssText = 'position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:' + (isErr ? '#b91c1c' : '#1f4e79') + ';color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.2)'; document.body.appendChild(el); }
+    el.textContent = msg;
+    el.style.display = 'block';
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { el.style.display = 'none'; }, 2600);
+  }
+
+  function api(url, body) {
+    return fetch(url, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body || {})
+    }).then(function (r) {
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error(j.error || '操作失败');
+        return j;
+      });
+    });
+  }
+
+  /* ---------- 顶栏：门店 / 角色 / 返回总账号 ---------- */
+  function decorateTopbar() {
+    var ctx = window.__CTX || {};
+    var right = document.querySelector('.topbar-right');
+    if (!right || !ctx.role) return;
+    var roleTxt = { super: '总账号', owner: '主账号', designer: '设计师' }[ctx.role] || ctx.role;
+
+    if (ctx.tenantName) {
+      var tb = document.createElement('span');
+      tb.className = 'tenant-badge';
+      tb.textContent = ctx.tenantName;
+      right.insertBefore(tb, right.firstChild);
+    }
+    var rb = document.createElement('span');
+    rb.className = 'role-badge';
+    rb.textContent = roleTxt;
+    right.insertBefore(rb, right.querySelector('#userName'));
+
+    if (ctx.role === 'super' && ctx.tenantId) {
+      var back = document.createElement('button');
+      back.type = 'button';
+      back.className = 'back-super-btn';
+      back.textContent = '返回总账号';
+      back.onclick = function () {
+        back.disabled = true;
+        api('/api/act', { tenantId: null }).then(function () { location.reload(); })
+          .catch(function (e) { tip(e.message, true); back.disabled = false; });
+      };
+      right.insertBefore(back, right.querySelector('#logoutBtn'));
+    }
+  }
+
+  /* ---------- 总账号：门店控制台 ---------- */
+  window.__renderSuperConsole = function () {
+    document.body.classList.add('is-super-root');
+    var view = document.getElementById('view');
+    if (!view) return;
+
+    function draw() {
+      fetch('/api/tenants', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          var list = j.tenants || [];
+          var items = list.map(function (t) {
+            return '<div class="tc-item">' +
+              '<h3>' + esc(t.name) + (t.disabled ? ' <span class="st-off">已停用</span>' : '') + '</h3>' +
+              '<div class="tc-meta">' + t.users + ' 个账号 · ' + t.quotes + ' 张报价单</div>' +
+              '<div class="tc-acts">' +
+                '<button class="btn small primary" data-enter="' + esc(t.id) + '"' + (t.disabled ? ' disabled' : '') + '>进入门店</button>' +
+                '<button class="btn small" data-toggle="' + esc(t.id) + '" data-off="' + (t.disabled ? '1' : '0') + '">' + (t.disabled ? '启用' : '停用') + '</button>' +
+                '<button class="btn small danger" data-del="' + esc(t.id) + '" data-name="' + esc(t.name) + '">删除</button>' +
+              '</div>' +
+            '</div>';
+          }).join('');
+
+          view.innerHTML =
+            '<div class="tc-wrap">' +
+              '<section class="tc-card">' +
+                '<h2>门店管理 <span class="badge">' + list.length + ' 个门店</span></h2>' +
+                '<div class="tc-grid">' + (items || '<div class="tc-empty">还没有门店</div>') + '</div>' +
+              '</section>' +
+              '<section class="tc-card">' +
+                '<h2>新建门店</h2>' +
+                '<div class="tc-form">' +
+                  '<div class="field"><label>门店名称</label><input id="tcName" placeholder="如：广州天河店"></div>' +
+                  '<div class="field"><label>主账号用户名</label><input id="tcUser" placeholder="如：gztianhe"></div>' +
+                  '<div class="field"><label>主账号初始密码（≥6 位）</label><input id="tcPw" placeholder="登录后可改"></div>' +
+                  '<button class="btn primary" id="tcCreate">创建门店</button>' +
+                '</div>' +
+                '<div class="hint" style="margin-top:10px">创建后把「用户名 + 初始密码」发给店里的财务，他用主账号登录后可以自己加设计师账号。</div>' +
+              '</section>' +
+            '</div>';
+
+          view.addEventListener('click', function (e) {
+            var b = e.target.closest('button');
+            if (!b) return;
+            if (b.dataset.enter) {
+              b.disabled = true;
+              api('/api/act', { tenantId: b.dataset.enter }).then(function () { location.reload(); })
+                .catch(function (err) { tip(err.message, true); b.disabled = false; });
+            } else if (b.dataset.toggle) {
+              b.disabled = true;
+              api('/api/tenants', { action: b.dataset.off === '1' ? 'enable' : 'disable', id: b.dataset.toggle })
+                .then(function () { location.reload(); })
+                .catch(function (err) { tip(err.message, true); b.disabled = false; });
+            } else if (b.dataset.del) {
+              if (!b.dataset.confirm2) { b.dataset.confirm2='1'; b.textContent='再点一次确认'; setTimeout(function(){ if(b.dataset.confirm2){ b.dataset.confirm2=''; b.textContent='删除'; } }, 3000); return; }
+              b.disabled = true;
+              api('/api/tenants', { action: 'delete', id: b.dataset.del }).then(function () { location.reload(); })
+                .catch(function (err) { tip(err.message, true); b.disabled = false; });
+            } else if (b.id === 'tcCreate') {
+              var name = (document.getElementById('tcName') || {}).value || '';
+              var user = (document.getElementById('tcUser') || {}).value || '';
+              var pw = (document.getElementById('tcPw') || {}).value || '';
+              if (!name.trim()) { tip('请填门店名称', true); return; }
+              if (user.trim().length < 2) { tip('主账号用户名至少 2 个字', true); return; }
+              if (pw.length < 6) { tip('主账号密码至少 6 位', true); return; }
+              b.disabled = true;
+              api('/api/tenants', { action: 'create', name: name.trim(), ownerUsername: user.trim(), ownerPassword: pw })
+                .then(function () { tip('门店已创建：' + name.trim()); setTimeout(function () { location.reload(); }, 700); })
+                .catch(function (err) { tip(err.message, true); b.disabled = false; });
+            }
+          });
+        })
+        .catch(function (e) {
+          view.innerHTML = '<div class="tc-wrap"><div class="tc-card">加载失败：' + esc(e.message) + '</div></div>';
+        });
+    }
+
+    draw();
+    var un = document.getElementById('userName');
+    if (un && window.__CTX) un.textContent = '';
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(decorateTopbar, 400);
+  });
+})();
+</script>
 </body>
 </html>
