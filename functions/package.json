@@ -1,0 +1,12 @@
+{
+  "name": "wardrobe-quote-multi-tenant",
+  "version": "2.0.0",
+  "private": true,
+  "description": "定制衣柜报价系统 · 多门店版（Netlify Functions + Blobs）",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^11.1.9"
+  }
+}
