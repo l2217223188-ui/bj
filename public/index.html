@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
@@ -521,7 +521,7 @@ textarea.terms { width: 100%; min-height: 130px; border: 1px solid #d5dde7; bord
   color: #1f4e79;
   border-top: 1.5px solid #b9cee4;
 }
-.sheet-subtotal td.num { font-size: 12.5px; }
+.sheet-subtotal td.num { font-size: 12.5px; white-space: nowrap; }
 
 /* ============ 图片上传（Logo / 收款码） ============ */
 .img-ups { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
@@ -3570,6 +3570,8 @@ body.is-designer .summary-card h2 { font-size: 13px; }
       mergedRows.push('<tr class="sheet-group-row"><td colspan="7">' + gTitle + '</td></tr>');
       let gsum = 0;
       let gsumAll = 0;
+      let gArea = 0;      /* 本组投影面积合计 */
+      let gMeter = 0;     /* 本组延米合计 */
 
       g.items.forEach(it => {
         const cr = it.cr;
@@ -3586,6 +3588,7 @@ body.is-designer .summary-card h2 { font-size: 13px; }
         if (cabLines.length) {
           const baseLine = cabLines[0];
           gsum += cabAmt;
+          if (cr.mode === MODE_METER) gMeter += cr.qty; else gArea += cr.qty;
           cabRowHtml = '<tr>' +
             '<td class="center">' + (it.idx + 1) + '</td>' +
             '<td>' + esc(label) + '</td>' +
@@ -3626,8 +3629,11 @@ body.is-designer .summary-card h2 { font-size: 13px; }
         }
       });
 
-      cabRows.push('<tr class="sheet-subtotal"><td colspan="6">' + esc(g.space || '本组') + ' 小计</td><td class="num">¥' + fmt(round2(gsum)) + '</td></tr>');
-      mergedRows.push('<tr class="sheet-subtotal"><td colspan="6">' + esc(g.space || '本组') + ' 小计</td><td class="num">¥' + fmt(round2(gsumAll)) + '</td></tr>');
+      const gQtyTxt = (gArea > 0 || gMeter > 0)
+        ? [gArea > 0 ? fmtQty(round2(gArea)) + ' ㎡' : '', gMeter > 0 ? fmtQty(round2(gMeter)) + ' 米' : ''].filter(Boolean).join(' + ')
+        : '—';
+      cabRows.push('<tr class="sheet-subtotal"><td colspan="5">' + esc(g.space || '本组') + ' 小计</td><td class="num">' + gQtyTxt + '</td><td class="num">¥' + fmt(round2(gsum)) + '</td></tr>');
+      mergedRows.push('<tr class="sheet-subtotal"><td colspan="5">' + esc(g.space || '本组') + ' 小计</td><td class="num">' + gQtyTxt + '</td><td class="num">¥' + fmt(round2(gsumAll)) + '</td></tr>');
     });
 
     /* 表三：其他费用（运输 / 上楼 / 安装等） */
